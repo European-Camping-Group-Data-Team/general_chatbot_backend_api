@@ -24,5 +24,5 @@ The API returns responses in JSON format with the following structure:
 To run the application, execute the following command:
 
 export FLASK_APP=main.py
-flask run --host=0.0.0.0 --port=5000
+flask run --host=0.0.0.0 --port=8502
 
