@@ -1,0 +1,12 @@
+google-cloud-bigquery
+streamlit
+torch 
+transformers
+bitsandbytes
+pynvml
+streamlit_feedback
+accelerate
+
+#api
+flask_session 
+flask
