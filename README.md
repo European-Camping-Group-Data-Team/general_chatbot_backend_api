@@ -26,3 +26,10 @@ To run the application, execute the following command:
 export FLASK_APP=main.py
 flask run --host=0.0.0.0 --port=8502
 
+## Curl through external ip
+curl -X POST \
+  http://34.78.108.153:8502/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"message": "Tell me a joke?",
+           "model_id":"google/gemma-7b-it"   
+}'

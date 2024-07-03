@@ -8,13 +8,14 @@ app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
 model_llamma = ChatbotModel(model_id="meta-llama/Meta-Llama-3-8B-Instruct")
-model_gemma = ChatbotModel(model_id="google/gemma-7b-it")
+# model_gemma = ChatbotModel(model_id="google/gemma-7b-it")
 
 def get_model(model_id):
-    if model_id == "google/gemma-7b-it":
-        return model_gemma
-    else:
-        return model_llamma
+    # if model_id == "google/gemma-7b-it":
+    #     return model_gemma
+    # else:
+    #     return model_llamma
+    return model_llamma
     
 @app.route('/chat', methods=['POST'])
 def chat():
