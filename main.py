@@ -2,9 +2,17 @@ from flask import Flask, request, jsonify, session
 from flask_session import Session
 from chatbot import Chatbot
 import logging
+import os
+import datetime
 
 # logging
-logging.basicConfig(filename='logs/{datetime.date.today().isoformat()}.log', level=logging.DEBUG)
+log_file_name = f'logs/{datetime.datetime.now().strftime("%Y-%m-%d")}.log'
+
+if not os.path.exists(log_file_name):
+    with open(log_file_name, 'w') as f:
+        pass
+    
+logging.basicConfig(filename=log_file_name, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # app config
 app = Flask(__name__)
@@ -68,12 +76,14 @@ def chat():
         
         # Save the session
         session.modified = True
-        logging.info()
+        logging.info(f'{response}')
         
         return jsonify({'response': response})
     except KeyError as e:
+        logging.error(f'ERROR: {e}')
         return jsonify({'response': 'Invalid request, "message" key is missing'}), 400
     except Exception as e:
+        logging.error(f'ERROR: {e}')
         return jsonify({'response': str(e)}), 500
 
 if __name__ == '__main__':

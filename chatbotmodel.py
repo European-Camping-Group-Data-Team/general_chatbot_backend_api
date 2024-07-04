@@ -87,8 +87,8 @@ class ChatbotModel:
         #add system msg to msgs and cut the length
         messages_ = self.process_input_messages(messages)
         
-        print('-'*50)
-        print(messages_)
+        # print('-'*50)
+        # print(messages_)
         
         # apply chat template
         messages_tmpl = self.tokenizer.apply_chat_template(messages_,
@@ -120,8 +120,8 @@ class ChatbotModel:
         #add system msg to msgs and cut the length
         messages_ = self.process_input_messages(messages)
         
-        print('-'*50)
-        print(messages_)
+        # print('-'*50)
+        # print(messages_)
         
         # apply chat template
         messages_tmpl = self.tokenizer.apply_chat_template(messages_,
