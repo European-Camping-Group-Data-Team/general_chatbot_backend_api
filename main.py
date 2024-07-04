@@ -1,13 +1,17 @@
 from flask import Flask, request, jsonify, session
 from flask_session import Session
-from chatbotmodel import ChatbotModel
+from chatbot import Chatbot
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'  # Change this to a secure random key
+app.config['SECRET_KEY'] = '819428'  # Change this to a secure random key
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
-model_llamma = ChatbotModel(model_id="meta-llama/Meta-Llama-3-8B-Instruct")
+model_llamma = Chatbot(model_id="meta-llama/Meta-Llama-3-8B-Instruct",
+                       model_quantization_option="4bit",
+                       function_team = "General",
+                       response_style = "short and clear"
+                       )
 # model_gemma = ChatbotModel(model_id="google/gemma-7b-it")
 
 def get_model(model_id):
