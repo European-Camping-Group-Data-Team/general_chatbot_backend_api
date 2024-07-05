@@ -2,14 +2,13 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM,BitsAndBytesConfig, TextIteratorStreamer
 import os
 from threading import Thread
-import pynvml
 
 class Chatbot:
     def __init__(self, 
                 model_id,
                 model_quantization_option,
                 function_team = "IT",
-                response_style = "short and clear"
+                response_style = "concise and clear"
                 ):
        self.get_huggingface_token()
        self.model_id = model_id
@@ -17,7 +16,6 @@ class Chatbot:
        self.torch_dtype = torch.bfloat16
        self.function_team = function_team
        self.response_style = response_style
-       #self.device = set_cuda_device()
        self.max_history_msgs = 5
        self.model = self.get_model()
        self.tokenizer = self.get_tokenizer()
@@ -87,9 +85,6 @@ class Chatbot:
         #add system msg to msgs and cut the length
         messages_ = self.process_input_messages(messages)
         
-        print('-'*50)
-        print(messages_)
-        
         # apply chat template
         messages_tmpl = self.tokenizer.apply_chat_template(messages_,
                                tokenize=False,
@@ -120,9 +115,6 @@ class Chatbot:
         #add system msg to msgs and cut the length
         messages_ = self.process_input_messages(messages)
         
-        print('-'*50)
-        print(messages_)
-        
         # apply chat template
         messages_tmpl = self.tokenizer.apply_chat_template(messages_,
                                tokenize=False,
@@ -147,26 +139,6 @@ class Chatbot:
             generated_text += new_text
         return generated_text
             
-def set_cuda_device():
-    '''
-    Function to set cuda device based on GPU usage
-    '''
-    # check gpu usage
-    pynvml.nvmlInit()
-    handle = pynvml.nvmlDeviceGetHandleByIndex(0)  # Get handle for GPU 0
-    meminfo = pynvml.nvmlDeviceGetMemoryInfo(handle)
-    memory_allocated_gb = meminfo.used / (1024 ** 3)  # in GB
-    print("Memory allocated on the GPU: {:.2f} GB".format(memory_allocated_gb))
-    # Set the CUDA device
-    if memory_allocated_gb<7:
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    else:
-        print('Switch to cuda:1')
-        device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
-    torch.cuda.set_device(device)
-    print("Cuda device: ", device)
-    print("-"*100)
-    return device
 
 def set_quantization_config(model_quantization_option):
     if model_quantization_option=="4bit":

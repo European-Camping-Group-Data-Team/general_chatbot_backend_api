@@ -40,3 +40,17 @@ Why did the scarecrow win an award?
 
 Because he was outstanding in his field!
 2024-07-04 13:16:22,089 - INFO - 127.0.0.1 - - [04/Jul/2024 13:16:22] "POST /chat HTTP/1.1" 200 -
+2024-07-04 13:54:47,950 - INFO - Get request: {'message': 'Hi', 'model_id': 'google/gemma-7b-it'}
+2024-07-04 13:54:47,950 - INFO - Nb Get Model : 4
+2024-07-04 13:54:52,808 - INFO - It seems like we're stuck in a loop! Can you please try to ask me a question or share something you'd like to talk about? I'm here to help with any questions or topics you'd like to discuss.
+2024-07-04 13:54:52,809 - INFO - 89.85.83.48 - - [04/Jul/2024 13:54:52] "POST /chat HTTP/1.1" 200 -
+2024-07-05 12:13:11,528 - INFO - Get request: {'message': 'Tell me a joke?', 'model_id': 'google/gemma-7b-it'}
+2024-07-05 12:13:11,529 - INFO - Nb Get Model : 5
+2024-07-05 12:13:14,479 - INFO - Here's one:
+
+Why couldn't the bicycle stand up by itself?
+
+Because it was two-tired!
+
+Hope that made you smile!
+2024-07-05 12:13:14,481 - INFO - 46.231.222.44 - - [05/Jul/2024 12:13:14] "POST /chat HTTP/1.1" 200 -
