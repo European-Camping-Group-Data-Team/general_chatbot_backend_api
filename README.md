@@ -19,12 +19,14 @@ The API returns responses in JSON format with the following structure:
     "response": "String"
 }
 
-## Running the Application
+## Running the Application Using pm2
+- install pm2: $npm install pm2
+- run: $pm2 start "uvicorn main:app --host 0.0.0.0 --port 8503" --name chatbot_backend
+- check logs: $pm2 logs chatbot_backend
+- stop: $pm2 stop chatbot_backend
 
-To run the application, execute the following command:
-
-export FLASK_APP=main.py
-flask run --host=0.0.0.0 --port=8502
+## Load testing
+- #locust -f loadtesting.py 
 
 ## Curl through external ip
 curl -X POST \

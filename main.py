@@ -1,5 +1,7 @@
-from flask import Flask, request, jsonify, session
-from flask_session import Session
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+
 from chatbot import Chatbot
 import logging
 import os
@@ -12,20 +14,14 @@ if not os.path.exists(log_file_name):
     with open(log_file_name, 'w') as f:
         pass
     
-logging.basicConfig(filename=log_file_name, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# app config
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '819428'  # Change this to a secure random key
-app.config['SESSION_TYPE'] = 'filesystem'
-Session(app)
+logging.basicConfig(filename=log_file_name, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # global var
 nb_model_loaded = 0
 nb_get_model = 0
 
 # load model
-model_llamma = Chatbot(model_id="meta-llama/Meta-Llama-3-8B-Instruct",
+model = Chatbot(model_id="meta-llama/Meta-Llama-3-8B-Instruct",
                        model_quantization_option="4bit",
                        function_team = "General",
                        response_style = "short and clear"
@@ -33,59 +29,32 @@ model_llamma = Chatbot(model_id="meta-llama/Meta-Llama-3-8B-Instruct",
 nb_model_loaded +=1
 logging.info(f"Nb Model loaded : {nb_model_loaded}")
 
-# model_gemma = ChatbotModel(model_id="google/gemma-7b-it")
+if nb_model_loaded>1:
+    logging.error(f"Nb Model loaded : {nb_model_loaded}")
+    
+class ChatHistory(BaseModel):
+    user_id: str
+    history: list
 
-def get_model(model_id):
-    # if model_id == "google/gemma-7b-it":
-    #     return model_gemma
-    # else:
-    #     return model_llamma
+class ChatResponse(BaseModel):
+    user_id: str
+    response: str
+        
+app = FastAPI()
+
+
+@app.post("/chat")
+async def chat(chathistory: ChatHistory):
     
-    global nb_get_model
-    nb_get_model +=1
-    logging.info(f"Nb Get Model : {nb_get_model}")
-    
-    return model_llamma
-    
-@app.route('/chat', methods=['POST'])
-def chat():
+    logging.info('chathistory: ', chathistory)
     try:
-        logging.info(f'Get request: {request.json}')
-        user_message = request.json['message']
-        model_id = request.json['model_id']
+        history = chathistory.history
+        user_id = chathistory.user_id
         
-        # Initialize chat history for the user if it doesn't exist
-        if 'chat_history' not in session:
-            session['chat_history'] = []
-            session['model_id'] = model_id
+        response =await model.response_test(history)
+        chatresponse = ChatResponse(user_id = user_id, response=response)
+        logging.info('response',chatresponse)
         
-        # when user changes model, clear memory
-        if session['model_id']!=model_id:
-            session['chat_history'] = []
-            session['model_id'] = model_id
-        
-        # Add user message to chat history
-        session['chat_history'].append({'role': 'user', 'content': user_message})
-        
-        # Generate response using the entire chat history
-        model = get_model(session['model_id'])
-        response = model.response_test(session['chat_history'])
-        
-        # Add AI response to chat history
-        session['chat_history'].append({'role': 'assistant', 'content': response})
-        
-        # Save the session
-        session.modified = True
-        logging.info(f'{response}')
-        
-        return jsonify({'response': response})
-    except KeyError as e:
-        logging.error(f'ERROR: {e}')
-        return jsonify({'response': 'Invalid request, "message" key is missing'}), 400
+        return chatresponse
     except Exception as e:
-        logging.error(f'ERROR: {e}')
-        return jsonify({'response': str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=8502)
-
+        raise HTTPException(status_code=400, detail=f"{str(e)}")

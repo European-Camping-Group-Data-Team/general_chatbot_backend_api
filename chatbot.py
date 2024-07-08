@@ -107,7 +107,7 @@ class Chatbot:
         for _, new_text in enumerate(streamer):
             yield new_text
 
-    def response_test(self,messages):
+    async def response_test(self,messages):
         
         # set streamer
         streamer = TextIteratorStreamer(self.tokenizer, skip_prompt=True, skip_special_tokens=True)

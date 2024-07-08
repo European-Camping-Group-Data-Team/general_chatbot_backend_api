@@ -7,6 +7,12 @@ pynvml
 streamlit_feedback
 accelerate
 
-#api
+#flask api
 flask_session 
 flask
+
+#fastapi
+fastapi
+
+#load testing
+locust
