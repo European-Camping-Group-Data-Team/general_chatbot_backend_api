@@ -15,5 +15,5 @@ class UserBehavior(TaskSet):
 class WebsiteUser(HttpUser):
     tasks = [UserBehavior]
     min_wait=5 #interval time between questions posted by same user
-    max_wait=120 
+    max_wait=240 
     host = "http://localhost:8503"

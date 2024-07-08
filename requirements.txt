@@ -1,18 +1,12 @@
-google-cloud-bigquery
-streamlit
-torch 
-transformers
-bitsandbytes
-pynvml
-streamlit_feedback
-accelerate
-
-#flask api
-flask_session 
-flask
+google-cloud-bigquery==3.25.0
+torch==2.3.1
+transformers==4.41.2
+bitsandbytes==0.43.1
+accelerate==0.31.0
 
 #fastapi
-fastapi
+fastapi==0.111.0
+fastapi-cli==0.0.4
 
 #load testing
-locust
+# locust

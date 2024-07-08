@@ -1,1 +1,0 @@
-session_id=12345678; username=JohnDoe; email=john.doe@example.com
