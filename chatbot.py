@@ -2,6 +2,7 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM,BitsAndBytesConfig, TextIteratorStreamer
 import os
 from threading import Thread
+from google.cloud import secretmanager
 
 class Chatbot:
     def __init__(self, 
@@ -25,9 +26,14 @@ class Chatbot:
         '''
         Function to get HF token
         '''
-        token_file_path = os.path.join(os.getenv("HOME"), ".cache", "huggingface", "token")
-        with open(token_file_path, "r") as f:
-            hf_token = f.read().strip()
+        # token_file_path = os.path.join(os.getenv("HOME"), ".cache", "huggingface", "token")
+        # with open(token_file_path, "r") as f:
+        #     hf_token = f.read().strip()
+        client = secretmanager.SecretManagerServiceClient()
+        name = f"projects/842140612422/secrets/huggingface/versions/latest"
+        response = client.access_secret_version(request={"name": name})
+        hf_token = response.payload.data.decode("UTF-8")
+        print(hf_token)
         os.environ["HF_TOKEN"] = hf_token
 
     def get_system_prompt(self):
