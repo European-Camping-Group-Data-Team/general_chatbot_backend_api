@@ -85,7 +85,7 @@ class Chatbot:
     def get_tokenizer(self):
         return AutoTokenizer.from_pretrained(self.model_id, torch_dtype=self.torch_dtype)
     
-    def response(self,messages):
+    async def response(self,messages):
         
         # set streamer
         streamer = TextIteratorStreamer(self.tokenizer, skip_prompt=True, skip_special_tokens=True)

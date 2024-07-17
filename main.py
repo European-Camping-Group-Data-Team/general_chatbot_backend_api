@@ -6,6 +6,9 @@ from uuid import uuid4
 from datetime import datetime, timedelta
 import time
 import threading
+#streaming
+from fastapi.responses import StreamingResponse
+
 
 # load model
 model = Chatbot(model_id="meta-llama/Meta-Llama-3-8B-Instruct")
@@ -94,6 +97,43 @@ async def chat(chat_request: ChatRequest):
     
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"{str(e)}")
+
+# STREAM CHAT 
+async def stream_response(model_stream, current_session):
+    full_response = ""
+    async for chunk in model_stream:
+        if chunk:
+            full_response += chunk
+            yield chunk
+    
+    # After streaming is complete, update the session history
+    current_session["chat_history"].append({"role": "assistant", "content": full_response})
+    
+@app.post("/chat-stream")
+async def chat(chat_request: ChatRequest): 
+    try:
+        user_id = chat_request.user_id
+        session_id = chat_request.session_id
+        message = chat_request.message
+        
+        current_session = get_session(session_id)
+        
+        # update expires time 
+        current_session['expires'] = datetime.now() + SESSION_TIMEOUT
+       
+        # update session history 
+        current_session["chat_history"].append({"role":"user","content":message})
+        
+        history = current_session["chat_history"]
+
+        return StreamingResponse(
+                model.response(history)
+            )
+
+    
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"{str(e)}")
+    
 
 @app.post("/new_session")
 async def newSession(user:User):
