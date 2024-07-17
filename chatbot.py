@@ -1,14 +1,14 @@
 import torch
+import requests
 from transformers import AutoTokenizer, AutoModelForCausalLM,BitsAndBytesConfig, TextIteratorStreamer
 import os
 from threading import Thread
-from google.cloud import secretmanager
 
 class Chatbot:
     def __init__(self, 
                 model_id,
-                model_quantization_option,
-                function_team = "IT",
+                model_quantization_option="4bit",
+                function_team = "General",
                 response_style = "concise and clear"
                 ):
        self.get_huggingface_token()
@@ -21,21 +21,23 @@ class Chatbot:
        self.model = self.get_model()
        self.tokenizer = self.get_tokenizer()
 
+       
+    def get_metadata(self, metadata_key):
+        url = f'http://metadata.google.internal/computeMetadata/v1/instance/attributes/{metadata_key}'
+        headers = {'Metadata-Flavor': 'Google'}
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            return response.text
+        else:
+            raise Exception(f"Failed to get metadata for key {metadata_key}. Status code: {response.status_code}")
+
     
     def get_huggingface_token(self):
         '''
         Function to get HF token
         '''
-        # token_file_path = os.path.join(os.getenv("HOME"), ".cache", "huggingface", "token")
-        # with open(token_file_path, "r") as f:
-        #     hf_token = f.read().strip()
-        client = secretmanager.SecretManagerServiceClient()
-        name = f"projects/842140612422/secrets/huggingface/versions/latest"
-        response = client.access_secret_version(request={"name": name})
-        hf_token = response.payload.data.decode("UTF-8")
-        print(hf_token)
-        os.environ["HF_TOKEN"] = hf_token
-
+        hf_ = self.get_metadata('hf_token')
+        os.environ["HF_TOKEN"] = hf_
     def get_system_prompt(self):
         '''
         Function to set system prompt

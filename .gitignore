@@ -8,3 +8,6 @@ venv
 #
 *.log
 *.json
+
+#pm2
+node_modules
