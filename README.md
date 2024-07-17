@@ -2,21 +2,53 @@
 
 This is the backend API for a chatbot that processes user input and generates responses.
 
-## Request Format
+A new chat process begins from creating a new session then post question with session id.
+
+# 1. Get Session id
+
+URL = "http://34.78.108.153:8503/new_session"
+
+- Request Format
 
 The API accepts requests in JSON format with the following structure:
 
 {
-    "message": "String",
-    "model_id": "String" (one of: "meta-llama/Meta-Llama-3-8B-Instruct", "google/gemma-7b-it")
+   
+    "user_id": String
 }
 
-## Response Format
+- Response Format
 
 The API returns responses in JSON format with the following structure:
 
 {
-    "response": "String"
+    "session_id": String
+}
+
+# 2. Chat 
+
+URL = "http://34.78.108.153:8503/chat"
+
+- Request Format
+
+The API accepts requests in JSON format with the following structure:
+
+{
+   
+    "user_id": String",
+    "session_id": String,
+    "message": String
+}
+
+- Response Format
+
+The API returns responses in JSON format with the following structure:
+
+{
+   
+    "user_id": String",
+    "session_id": String,
+    "response": String
 }
 
 ## Running the Application Using pm2
