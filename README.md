@@ -27,7 +27,7 @@ The API returns responses in JSON format with the following structure:
 
 # 2. Chat 
 
-URL = "http://34.78.108.153:8503/chat"
+URL = "http://34.78.108.153:8503/chat-stream"
 
 - Request Format
 
@@ -42,28 +42,14 @@ The API accepts requests in JSON format with the following structure:
 
 - Response Format
 
-The API returns responses in JSON format with the following structure:
-
-{
-   
-    "user_id": String",
-    "session_id": String,
-    "response": String
-}
+The API returns responses in media_type="text/event-stream".
 
 ## Running the Application Using pm2
 - install pm2: $npm install pm2
-- run: $pm2 start "uvicorn main:app --host 0.0.0.0 --port 8503" --name chatbot_backend
+- run: $pm2 start "uvicorn main:app --host 0.0.0.0 --port 8503" --name chatbot_backend --log-date-format 'YYYY-MM-DD HH:mm Z'
 - check logs: $pm2 logs chatbot_backend
 - stop: $pm2 stop chatbot_backend
+- check logs files: $cd ~/.pm2/logs
 
 ## Load testing
 - #locust -f loadtesting.py 
-
-## Curl through external ip
-curl -X POST \
-  http://34.78.108.153:8502/chat \
-  -H 'Content-Type: application/json' \
-  -d '{"message": "Tell me a joke?",
-           "model_id":"google/gemma-7b-it"   
-}'

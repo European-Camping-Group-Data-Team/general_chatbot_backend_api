@@ -10,4 +10,6 @@ venv
 *.json
 
 #pm2
-node_modules
+node_modules/
+
+driver_installer.run

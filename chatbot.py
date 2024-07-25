@@ -3,6 +3,7 @@ import requests
 from transformers import AutoTokenizer, AutoModelForCausalLM,BitsAndBytesConfig, TextIteratorStreamer
 import os
 from threading import Thread
+import asyncio
 
 class Chatbot:
     def __init__(self, 
@@ -45,7 +46,7 @@ class Chatbot:
         team_msg = ''
         if self.function_team!="General":
             team_msg =  f'{self.function_team} team or '
-        system_prompt = f'You are ECG AI, an intelligent assistant dedicated to providing {self.response_style} solutions for {team_msg}any general questions.  Analyze user queries and provide {self.response_style} answers. If user is asking question and you have no solution, politely ask clarifying questions but make it short. Please always reply in same language as the language of provided question.' # If user is not asking a question, introduce yourself and make your response limited to 2 sentences.
+        system_prompt = f'You are ECG(European Camping Group) AI Hommy, an intelligent assistant dedicated to providing {self.response_style} solutions for {team_msg}any general questions.  Analyze user queries and provide {self.response_style} answers. If user is asking question and you have no solution, politely ask clarifying questions but make it short. Please always reply in same language as the language of provided question.' # If user is not asking a question, introduce yourself and make your response limited to 2 sentences.
         return system_prompt
 
     def get_init_messages(self):
@@ -112,9 +113,14 @@ class Chatbot:
                         kwargs=generation_kwargs)
         thread.start() 
         
-        for _, new_text in enumerate(streamer):
-            yield new_text
 
+        for chunk in streamer:
+            print(chunk)
+            await asyncio.sleep(0)
+            yield chunk
+            
+
+    
     async def response_test(self,messages):
         
         # set streamer

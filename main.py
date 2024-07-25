@@ -8,7 +8,7 @@ import time
 import threading
 #streaming
 from fastapi.responses import StreamingResponse
-
+import logging
 
 # load model
 model = Chatbot(model_id="meta-llama/Meta-Llama-3-8B-Instruct")
@@ -126,8 +126,11 @@ async def chat(chat_request: ChatRequest):
         
         history = current_session["chat_history"]
 
+        print(model.response(history))
+        
         return StreamingResponse(
-                model.response(history)
+                model.response(history),
+                media_type="text/event-stream"
             )
 
     
